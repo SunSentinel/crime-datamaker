@@ -1,8 +1,9 @@
 import requests
 import json
 import csv
-
+import re
 from datetime import datetime, timedelta
+
 import boto3
 import botocore
 
@@ -47,21 +48,24 @@ def get_incidents(url, offense_field):
     cat_violent = ['AGGREVATED', 'ARSON', 'ASSAULT', 'HOMICIDE', 'BATTERY', 'ROBBERY']
     cat_property = ['BURGLARY', 'BURGL', 'VANDALISM', 'THEFT', 'TRESPASS', 'PROPERTY CRIME', 'BREAKING & ENTERING']
     cat_vehicle = ['ACCIDENT', 'DRIVING', 'DUI', 'TRAFFIC', 'HIT AND RUN', 'HIT/RUN']
-    cat_fraud = ['FORGERY', 'FORGE', 'FRAUD', 'IMPERSONAT']
+    cat_fraud = ['FORGERY', 'FORGE', 'FRAUD', 'IMPERSONAT', 'IMPERSONATION', 'IMPERSONATING']
     cat_drug = ['DRUG', 'DRUGS', 'COCAIN', 'MARIJUANA', 'OVERDOSE', 'CANNABIS', 'CANNIBIS', 'WEED']
 
     for feature in incidents_data['features']:
 
-        offense = feature['properties'][offense_field]
-        if offense.upper() in cat_violent:
+        # Dissect up our offense descriptions for hand-rolled fuzzy matching.
+        offenseValue = feature['properties'][offense_field].upper().strip()
+        offenseSplit = re.split('\W+', offenseValue)
+
+        if set(offenseSplit).intersection(cat_violent):
             feature['properties']['crimecategory'] = 'violent'
-        elif offense.upper() in cat_property:
+        elif set(offenseSplit).intersection(cat_property):
             feature['properties']['crimecategory'] = 'property'
-        elif offense.upper() in cat_vehicle:
+        elif set(offenseSplit).intersection(cat_vehicle):
             feature['properties']['crimecategory'] = 'vehicle'
-        elif offense.upper() in cat_fraud:
+        elif set(offenseSplit).intersection(cat_fraud):
             feature['properties']['crimecategory'] = 'fraud'
-        elif offense.upper() in cat_drug:
+        elif set(offenseSplit).intersection(cat_drug):
             feature['properties']['crimecategory'] = 'drug'
         else:
             feature['properties']['crimecategory'] = 'other'
@@ -99,6 +103,7 @@ def save_to_s3(incidents_data, filename):
 def main(event, context):
     get_FLPD()
     get_DelrayPD()
+    print("Done!")
 
 if __name__ == '__main__':
     main('', '')
