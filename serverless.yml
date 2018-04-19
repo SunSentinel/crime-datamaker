@@ -18,6 +18,12 @@ provider:
   deploymentBucket:
     name: projects.sun-sentinel.com
 
+functions:
+  makedata:
+    handler: handler.main
+    events:
+      - schedule: rate(1 day)
+
 plugins:
   - serverless-python-requirements
 

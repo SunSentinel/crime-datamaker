@@ -1,6 +1,5 @@
 # Crime datamaker
-
-The scraper and parser framework powering the South Florida Sun Sentinel's police incident map. It only pulls from Fort Lauderdale's incident data so far, but more departments may be added in the future.
+The scraper and parser framework powering the South Florida Sun Sentinel's police incident map. It currently grabs Fort Lauderdale and Delray Beach's incident data, but more departments may be added in the future.
 
 ### Prerequisites
 - Python 3.6
@@ -19,7 +18,7 @@ Right now, handler.py is the main function. Other scrapers/parsers can be added 
 Configuration for the Lambda function like the deployment parameters, the script scheduler and deployment settings are located in [serverless.yml](https://github.com/SunSentinel/crime-datamaker/blob/master/serverless.yml) file. A list of all available properties can be found [here](https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/).
 
 ### Deploying
-Just run
+After you build your scripts, run
 ```
 serverless deploy
 ```
