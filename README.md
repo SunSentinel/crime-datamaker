@@ -1,5 +1,5 @@
 # Crime datamaker
-This is a collection of the scrapers and parsers powering the South Florida Sun Sentinel's police incident maps. It runs on Lambda using They currently grabs Fort Lauderdale and Delray Beach's incident data, but more departments may be added in the future.
+This is a collection of the scrapers and parsers powering the South Florida Sun Sentinel's police incident maps. It runs on Lambda using the [Serverless](https://serverless.com) framework. The scripts currently grab Fort Lauderdale and Delray Beach's incident data, but more departments may be added in the future.
 
 ### Prerequisites
 - Python 3.6
