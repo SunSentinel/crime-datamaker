@@ -40,7 +40,7 @@ def get_DelrayPD():
 
 # Get incidents by passing in url.
 # Each data source has a different name for its offense and incident date fields,
-# so pass those in too to standardize.
+# so pass those in too to standardize. Assumes date_field is ISO format.
 def get_incidents(url, offense_field, date_field):
 
     req = requests.get(url)
@@ -56,13 +56,16 @@ def get_incidents(url, offense_field, date_field):
     for feature in incidents_data['features']:
 
 
-        # Standardize incident date fields into new column.
-        dateValue = datetime.strptime(feature['properties'][date_field], "%Y-%m-%dT%H:%M:%S.%f")
-        feature['properties']['incident_date'] = dateValue.strftime('%m/%d/%Y')
+        # Standardize incident date and time fields into new columns.
+        datetimeValue = datetime.strptime(feature['properties'][date_field], "%Y-%m-%dT%H:%M:%S.%f")
+        feature['properties']['incident_date'] = datetimeValue.strftime('%m/%d/%Y')
+        feature['properties']['incident_time'] = datetimeValue.strftime('%-I:%M %p')
 
         # Standardize offenses into new column.
         offenseValue = feature['properties'][offense_field].upper().strip()
         feature['properties']['offense_final'] = offenseValue.title()
+        if feature['properties']['offense_final'] == "Burglary Conveyance":
+            feature['properties']['offense_final'] = "Vehicle break-in"
 
         # Dissect our offense fields, fuzzy match and categorize crime type.
         offenseSplit = re.split('\W+', offenseValue)
