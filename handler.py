@@ -9,7 +9,7 @@ import botocore
 
 # Store dates for today and two weeks ago for use in queries.
 now = datetime.now().replace(microsecond=0)
-last_week = now - timedelta(days=14)
+last_week = now - timedelta(days=30)
 
 # Get Fort Lauderdale police incident records from their API.
 def get_FLPD():
